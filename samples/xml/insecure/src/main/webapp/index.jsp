@@ -25,6 +25,17 @@
     <div class="container">
         <h1>TODO Secure this</h1>
         <p>We would like to secure this page</p>
+		    <h1>This is secured!</h1>
+		    <p>
+		      Hello <b><c:out value="${pageContext.request.remoteUser}"/></b>
+        </p>
+		    <p>
+		      Hello <b><c:out value="${pageContext.request.userPrincipal}"/></b>
+        </p>
+		    <form class="form-inline" action="logout" method="post">
+		      <input type="submit" value="Log out" />
+		      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		    </form>
     </div>
 </body>
 </html>
