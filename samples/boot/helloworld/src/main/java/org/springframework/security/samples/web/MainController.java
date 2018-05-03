@@ -15,9 +15,13 @@
  */
 package org.springframework.security.samples.web;
 
+import java.security.Principal;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author Joe Grandja
@@ -38,6 +42,13 @@ public class MainController {
 	@RequestMapping("/user/index")
 	public String userIndex() {
 		return "user/index";
+	}
+
+	@RequestMapping("/user/info")
+	@ResponseBody
+	public Object userInfo(Principal user) {
+//	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
+	  return ((Authentication)user).getPrincipal();
 	}
 
 	@RequestMapping("/login")
