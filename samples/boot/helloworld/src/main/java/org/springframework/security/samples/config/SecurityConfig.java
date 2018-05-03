@@ -30,9 +30,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// @formatter:off
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+//	  super.configure(http);
 		http
 				.authorizeRequests()
-					.antMatchers("/css/**", "/index").permitAll()
+//					.antMatchers("/css/**", "/index").permitAll()
 					.antMatchers("/user/**").hasRole("USER")
 					.and()
 				.formLogin().loginPage("/login").failureUrl("/login-error")
@@ -43,11 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// @formatter:on
 
 	// @formatter:off
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-			.inMemoryAuthentication()
-				.withUser("user").password("password").roles("USER");
-	}
+//	@Autowired 会覆盖yam里配置的user
+//	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//		auth
+//			.inMemoryAuthentication()
+//				.withUser("user2").password("password2").roles("USER");
+//	}
 	// @formatter:on
 }

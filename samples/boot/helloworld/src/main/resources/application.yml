@@ -10,3 +10,10 @@ logging:
 spring:
   thymeleaf:
     cache: false
+
+security:
+  ignored: /css/**, /index
+  user:
+    name: user
+    password: pwd
+    role: ROLE,USER
