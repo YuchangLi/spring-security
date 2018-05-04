@@ -83,10 +83,8 @@ public interface ClaimAccessor {
 			return null;
 		}
 		Object claimValue = this.getClaims().get(claim);
-		if (Long.class.isAssignableFrom(claimValue.getClass()) ||
-				Integer.class.isAssignableFrom(claimValue.getClass()) ||
-				Double.class.isAssignableFrom(claimValue.getClass())) {
-			return Instant.ofEpochSecond(((Number) claimValue).longValue());
+		if (Long.class.isAssignableFrom(claimValue.getClass())) {
+			return Instant.ofEpochSecond((Long) claimValue);
 		}
 		if (Date.class.isAssignableFrom(claimValue.getClass())) {
 			return ((Date) claimValue).toInstant();
