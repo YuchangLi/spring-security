@@ -4,16 +4,14 @@ server:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-
+    org.springframework: INFO
 spring:
   thymeleaf:
     cache: false
 
 security:
   ignored: /css/**, /index
-  user:
-    name: user
-    password: pwd
-    role: ROLE,USER
+  #user:
+  #  name: user
+  #  password: pwd
+  #  role: ROLE,USER
