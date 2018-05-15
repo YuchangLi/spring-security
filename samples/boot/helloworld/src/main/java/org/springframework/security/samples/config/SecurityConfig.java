@@ -13,41 +13,46 @@
  */
 package org.springframework.security.samples.config;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.samples.service.UserServiceImpl;
 
 /**
  * @author Joe Grandja
  */
 @EnableWebSecurity
+// 开启方法级别注解的配置
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
-  UserServiceImpl userSerivce;
+  UserDetailsService userService;
 
   // @formatter:off
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // super.configure(http);
-    http.authorizeRequests()
-        // .antMatchers("/css/**", "/index").permitAll()
-        .antMatchers("/user/**")
-//        .hasRole("USER")
-        .access("hasRole('USER') or hasAnyAuthority('ROOT')")
-        .and().formLogin().loginPage("/login")
+    http
+      .formLogin().loginPage("/login")
 //        .successForwardUrl("/user/info")
-        .failureUrl("/login-error")
-    // .and()
-    // .logout().logoutUrl("/logout")
+      .failureUrl("/login-error").permitAll()
+      .and().authorizeRequests()
+      // .antMatchers("/css/**", "/index").permitAll()
+      .antMatchers("/user/**")
+      .access("hasRole('USER') or hasAnyAuthority('ROOT')")
+      .antMatchers("/admin/**")
+      .access("@userService.hasPermission(request,authentication)")
+      .anyRequest().authenticated()
+//        .and()
+//        .logout().logoutUrl("/logout")
     ;
   }
   // @formatter:on
@@ -67,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     auth
 //      .and()
 //      .inMemoryAuthentication().withUser("user2").password("password2").roles("USER")
-      .userDetailsService(userSerivce) // 替换默认InMemoryUserDetailsManager
+      .userDetailsService(userService) // 替换默认InMemoryUserDetailsManager
       .passwordEncoder(passwordEncoder()) // 替换默认PlaintextPasswordEncoder
       ;
   }
@@ -86,4 +91,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
   // @formatter:on
+  
+  // Remove the ROLE_ prefix
+  @Bean
+  public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+      return new GrantedAuthorityDefaults("");
+  }
 }

@@ -17,6 +17,7 @@ package org.springframework.security.samples.web;
 
 import java.security.Principal;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,11 +52,55 @@ public class MainController {
 	  return ((Authentication)user).getPrincipal();
 	}
 
-	@RequestMapping("/login")
-	public String login() {
-		return "login";
+	@RequestMapping("/admin/detail")
+	@ResponseBody
+	public Object adminDetail(Principal user) {
+//	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
+	  return "detail";
 	}
 
+	/**
+	 * @PostAuthorize("returnObject.name == authentication.name")
+        Person findOne(Integer id);
+        
+        //当有多个对象是使用filterTarget进行标注
+      @PreFilter(filterTarget="ids", value="filterObject%2==0")
+       public void delete(List<Integer> ids, List<String> usernames) {
+  
+       }
+
+      @PreAuthorize("hasRole('ADMIN')")
+      @PostFilter("filterObject.name == authentication.name")
+      List<Person> findAll();
+	 */
+	@RequestMapping("/admin/list")
+	@ResponseBody
+	public Object adminList(Principal user) {
+//	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
+	  return "list";
+	}
+
+	@RequestMapping("/info/admin")
+	@ResponseBody
+	@PreAuthorize("hasRole('ADMIN')")
+	public Object infoAdmin() {
+//	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
+	  return "infoAdmin";
+	}
+
+	@RequestMapping("/info/role")
+	@ResponseBody
+	@PreAuthorize("hasRole('ROLE')")
+	public Object infoRole() {
+//	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
+	  return "infoRole";
+	}
+
+	
+	@RequestMapping("/login")
+	public String login() {
+	  return "login";
+	}
 	@RequestMapping("/login-error")
 	public String loginError(Model model) {
 		model.addAttribute("loginError", true);
