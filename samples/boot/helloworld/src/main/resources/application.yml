@@ -1,14 +1,23 @@
 server:
-  port: 8081
+  port: 9081
+  session:
+    timeout: 50
+    cookie:
+      http-only: true
+      #domain: liyuchang.cn
+      #secure: true #true不能https访问才会设置cookie
+      #max-age: 86400 #浏览器端JSESSIONID的cookie过期时间 
 
-logging:
-  file: ../log/spring-security-samples-boot-helloworld/log.log
-  level:
-    root: INFO
-    org.springframework: INFO
 spring:
+  application:
+    name: boot-helloworld-security
   thymeleaf:
     cache: false
+  session:
+    store-type: redis
+  redis:
+    host: localhost
+    port: 6379
 
 security:
   ignored: /css/**, /index
@@ -16,3 +25,9 @@ security:
   #  name: user
   #  password: pwd
   #  role: ROLE,USER
+
+logging:
+  file: ../log/spring-security-samples-boot-helloworld/log.log
+  level:
+    root: INFO
+    org.springframework: INFO
