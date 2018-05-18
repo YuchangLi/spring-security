@@ -1,7 +1,7 @@
 server:
-  port: 9081
+  port: 8081
   session:
-    timeout: 50
+    timeout: 86400
     cookie:
       http-only: true
       #domain: liyuchang.cn
@@ -10,7 +10,7 @@ server:
 
 spring:
   application:
-    name: spring-security-samples-boot-helloworld-9081
+    name: spring-security-samples-boot-helloworld-8081
   thymeleaf:
     cache: false
   session:
@@ -20,7 +20,8 @@ spring:
     port: 6379
 
 security:
-  ignored: /css/**, /index
+  enable-csrf: false
+  #ignored: /css/**, /index, /favicon.ico why can't work hear
   #user:
   #  name: user
   #  password: pwd

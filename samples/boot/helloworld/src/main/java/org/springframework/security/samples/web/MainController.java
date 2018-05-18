@@ -56,6 +56,14 @@ public class MainController {
 	  return ((Authentication)user).getPrincipal()+" "+appName;
 	}
 
+//	@CrossOrigin(origins = "http://client2.liyuchang.cn:9081")
+	@RequestMapping("/common/info")
+	@ResponseBody
+	public Object common(Principal user) {
+//	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
+	  return "common "+appName;
+	}
+
 	@RequestMapping("/admin/detail")
 	@ResponseBody
 	public Object adminDetail(Principal user) {

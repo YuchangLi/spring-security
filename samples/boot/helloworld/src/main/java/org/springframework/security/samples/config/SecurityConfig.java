@@ -13,6 +13,8 @@
  */
 package org.springframework.security.samples.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +26,9 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * @author Joe Grandja
@@ -49,12 +54,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .sessionManagement()
         .invalidSessionUrl("/login")
       .and()
+        .csrf()
+          .disable()
+        .cors() // by default uses a Bean by the name of corsConfigurationSource
+      .and()  
       .authorizeRequests()
-      // .antMatchers("/css/**", "/index").permitAll()
+        .antMatchers("/css/**", "/favicon.ico", "/index", "/common/**")
+          .permitAll()
         .antMatchers("/user/**")
-        .access("hasRole('USER') or hasAnyAuthority('ROOT')")
+          .access("hasRole('USER') or hasAnyAuthority('ROOT')")
         .antMatchers("/admin/**")
-        .access("@userService.hasPermission(request,authentication)")
+          .access("@userService.hasPermission(request,authentication)")
         .anyRequest().authenticated()
 //        .and()
 //        .logout().logoutUrl("/logout")
@@ -73,33 +83,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    // TODO Auto-generated method stub
     auth
-//      .and()
+//      .and() 会覆盖yam里配置的user
 //      .inMemoryAuthentication().withUser("user2").password("password2").roles("USER")
       .userDetailsService(userService) // 替换默认InMemoryUserDetailsManager
       .passwordEncoder(passwordEncoder()) // 替换默认PlaintextPasswordEncoder
       ;
   }
 
-  // @formatter:off
-  // @Autowired 会覆盖yam里配置的user
-  // public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-  // auth
-  // .inMemoryAuthentication()
-  // .withUser("user2").password("password2").roles("USER");
-  // }
-
-
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-  // @formatter:on
   
   // Remove the ROLE_ prefix
   @Bean
   public GrantedAuthorityDefaults grantedAuthorityDefaults() {
       return new GrantedAuthorityDefaults("");
+  }
+  
+  /**
+   * CORS处理，另外方法：https://spring.io/guides/gs/rest-service-cors/
+   */
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("https://example.com", "*"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 }

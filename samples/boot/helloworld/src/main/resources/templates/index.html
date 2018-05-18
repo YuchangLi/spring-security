@@ -4,6 +4,17 @@
         <title>Hello Spring Security</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/css/main.css" th:href="@{/css/main.css}" />
+        <script type="text/javascript" src="https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/jquery/jquery-1.10.2.min_65682a2.js"></script>
+		   <script type="text/javascript">
+		     $(document).ready(function() {
+		          $.ajax({
+		              url: "http://localhost:9081/common/info"
+		          }).then(function(data, status, jqxhr) {
+		             console.log(data);
+		             console.log(jqxhr);
+		          });
+		      });
+		   </script>
     </head>
     <body>
         <div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
