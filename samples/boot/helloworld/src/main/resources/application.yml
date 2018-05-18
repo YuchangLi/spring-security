@@ -10,7 +10,7 @@ server:
 
 spring:
   application:
-    name: boot-helloworld-security
+    name: spring-security-samples-boot-helloworld-9081
   thymeleaf:
     cache: false
   session:

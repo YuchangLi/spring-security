@@ -17,6 +17,7 @@ package org.springframework.security.samples.web;
 
 import java.security.Principal;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
 
+  @Value("${spring.application.name}")
+  private String appName;
+  
 	@RequestMapping("/")
 	public String root() {
 		return "redirect:/index";
@@ -49,7 +53,7 @@ public class MainController {
 	@ResponseBody
 	public Object userInfo(Principal user) {
 //	  return ((UsernamePasswordAuthenticationToken)user).getPrincipal();
-	  return ((Authentication)user).getPrincipal();
+	  return ((Authentication)user).getPrincipal()+" "+appName;
 	}
 
 	@RequestMapping("/admin/detail")
